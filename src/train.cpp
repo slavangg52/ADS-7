@@ -1,52 +1,52 @@
 // Copyright 2021 NNTU-CS
 #include "train.h"
 
-Train::Train() : head(nullptr), operationsCount(0) {}
+Train::Train() : first(nullptr), countOp(0) {}
 
-void Train::addCar(bool isLightOn) {
-    if (!head) {
-        head = new Car{isLightOn, nullptr, nullptr};
-        head->next = head;
-        head->prev = head;
+void Train::addCar(bool light) {
+    if (!first) {
+        first = new Car{light, nullptr, nullptr};
+        first->next = first;
+        first->prev = first;
     } else {
-        Car* lastCar = head->prev;
-        Car* newCar = new Car{isLightOn, head, lastCar};
+        Car* lastCar = first->prev;
+        Car* newCar = new Car{light, first, lastCar};
         lastCar->next = newCar;
-        head->prev = newCar;
+        first->prev = newCar;
     }
 }
 
 int Train::getLength() {
-    operationsCount = 0;
-    int currentSteps = 1;
-    Car* currentCar = head;
-    currentCar->light = true;
+    countOp = 0;
+    int steps = 1;
+    Car* current = first;
+    current->light = true;
 
     while (true) {
-        currentCar = currentCar->next;
-        operationsCount++;
+        current = current->next;
+        countOp++;
 
-        if (currentCar->light) {
-            currentCar->light = false;
-            int stepsBack = currentSteps;
+        if (current->light) {
+            current->light = false;
+            int backSteps = steps;
 
-            while (stepsBack--) {
-                currentCar = currentCar->prev;
-                operationsCount++;
+            while (backSteps--) {
+                current = current->prev;
+                countOp++;
             }
 
-            if (!currentCar->light) {
-                return currentSteps;
+            if (!current->light) {
+                return steps;
             }
 
-            currentSteps = 1;
-            currentCar->light = true;
+            steps = 1;
+            current->light = true;
         } else {
-            currentSteps++;
+            steps++;
         }
     }
 }
 
 int Train::getOpCount() {
-    return operationsCount;
+    return countOp;
 }
